@@ -59,6 +59,11 @@ getFlowsRecursive <- function(df=NULL, url) {
   df
 }
 
+#'
+#' @param flows A data frame containing the flows API response
+#' @param varName The variable to format (sourceObjects or destinationObjects)
+#' @return A data frame containing the source or destination data pivoted across
+#' the flows
 formatSrcDest <- function(flows, varName) {
   srcDest <-
     flows %>% 
@@ -82,6 +87,13 @@ getFlows <- function(year, planid) {
   flows <- getFlowsRecursive(url=url)
 }
 
+#' Return sources data pivoted against flows data
+#' 
+#' @param flows (Optional) A data frame containing the flows API response. If not
+#' provided, the flows are retrieved on the specified year and plan boundary.
+#' @param year (Optional) The boundary year (if ```flows``` not provided)
+#' @param planid (Optional) The boundary plan (if ```flows``` not provided)
+#' 
 getSources <- function(flows=NULL, year=NULL, planid=NULL) {
   if (is.null(flows)) {
     flows <- getFlows(year, planid)
@@ -89,6 +101,13 @@ getSources <- function(flows=NULL, year=NULL, planid=NULL) {
   sources <- formatSrcDest(flows, "sourceObjects")
 }
 
+#' Return destination data pivoted against flows data
+#' 
+#' @param flows (Optional) A data frame containing the flows API response. If not
+#' provided, the flows are retrieved on the specified year and plan boundary.
+#' @param year (Optional) The boundary year (if ```flows``` not provided)
+#' @param planid (Optional) The boundary plan (if ```flows``` not provided)
+#' 
 getDestinations <- function(flows=NULL, year=NULL, planid=NULL) {
   if (is.null(flows)) {
     flows <- getFlows(year, planid)
