@@ -59,6 +59,17 @@ getFlowsRecursive <- function(df=NULL, url) {
   df
 }
 
+formatSrcDest <- function(flows, varName) {
+  srcDest <-
+    flows %>% 
+    select(flowid  = id, varName) %>% 
+    unnest(cols = c(varName)) %>% 
+    mutate(across(c(organizationTypes, organizationSubTypes), as.character))
+  srcDest <- merge(y = srcDest, x = flows, by.y = "flowid",by.x = "id")
+  return(srcDest)
+}
+
+
 #' getFlows
 #' @param year Required, the boundary year
 #' @param planid Required, the boundary plan id
@@ -68,5 +79,19 @@ getFlowsRecursive <- function(df=NULL, url) {
 getFlows <- function(year, planid) {
   print(sprintf("Getting flows for year=%s, plan=%s", year, planid))
   url <- getUrl(year, planid)
-  getFlowsRecursive(url=url)
+  flows <- getFlowsRecursive(url=url)
+}
+
+getSources <- function(flows=NULL, year=NULL, planid=NULL) {
+  if (is.null(flows)) {
+    flows <- getFlows(year, planid)
+  }
+  sources <- formatSrcDest(flows, "sourceObjects")
+}
+
+getDestinations <- function(flows=NULL, year=NULL, planid=NULL) {
+  if (is.null(flows)) {
+    flows <- getFlows(year, planid)
+  }
+  destinations <- formatSrcDest(flows, "destinationObjects")
 }
