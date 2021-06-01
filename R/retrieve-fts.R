@@ -82,6 +82,7 @@ getFlows <- function(year, planid) {
   print(sprintf("Getting flows for year=%s, plan=%s", year, planid))
   url <- getUrl(year, planid)
   flows <- getFlowsRecursive(url=url)
+  return(flows)
 }
 
 #' Return sources data pivoted against flows data
@@ -96,6 +97,7 @@ getSources <- function(flows=NULL, year=NULL, planid=NULL) {
     flows <- getFlows(year, planid)
   }
   sources <- formatSrcDest(flows, "sourceObjects")
+  return(sources)
 }
 
 #' Return destination data pivoted against flows data
@@ -110,4 +112,5 @@ getDestinations <- function(flows=NULL, year=NULL, planid=NULL) {
     flows <- getFlows(year, planid)
   }
   destinations <- formatSrcDest(flows, "destinationObjects")
+  return(destinations)
 }
