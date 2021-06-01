@@ -12,8 +12,14 @@ getFlows(<year>, <plan id>)
 
 ## Power BI
 
-Same as general usage, but ensure to assign the result to a variable so that Power BI can read it, e.g. `flows <- getFlows`
+Similar to general usage, but using Windows-friendly paths, and being sure to assign the result to a variable so that Power BI can read it, e.g.
+```
+source("C:\\Path\\To\\retrieve-fts\\R\\retrieve-fts.R")
+Flows <- getFlows(<year>, <plan id>)
+```
 
-🚧 The format returned is currenty only partially compatible with Power BI, primarily sources and destinations are not available. 🚧
+To get Power BI-compatible tables for sources and destinations, use the ```getSources``` and ```getDestinations``` functions respectively.
+
+*Tip* Complex data types within the returned data frame are not readable by Power BI - delete those columns to avoid error messages.
 
 See [Run R scripts](https://docs.microsoft.com/en-us/power-bi/connect-data/desktop-r-scripts) for more info.
