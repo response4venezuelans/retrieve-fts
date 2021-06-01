@@ -31,28 +31,29 @@ getUrl <- function(year=NULL, planid=NULL) {
 #' each subsequent request, until no next URL is available
 #' 
 getFlowsRecursive <- function(df=NULL, url) {
-  if (!is.null(url)) {
-    print(sprintf('Retrieving %s', url))
-    
-    # get data page
-    res = httr::GET(url)
-    
-    # stop if error
-    httr::stop_for_status(res, paste("get",url))
-    
-    # convert json to object
-    resData <- jsonlite::fromJSON(httr::content(res, "text"))
-    
-    # append flows to data frame
-    if (is.null(df)) 
-      df <- resData$data$flows
-    else
-      df <- rbind(df, resData$data$flows)
-
-    # get next data page
+  print(sprintf('Retrieving %s', url))
+  
+  # get data page
+  res = httr::GET(url)
+  
+  # stop if error
+  httr::stop_for_status(res, paste("get",url))
+  
+  # convert json to object
+  resData <- jsonlite::fromJSON(httr::content(res, "text"))
+  
+  # append flows to data frame
+  if (is.null(df)) 
+    df <- resData$data$flows
+  else
+    df <- bind_rows(df, resData$data$flows)
+  
+  if (is.null(resData$meta$nextLink)) {
+    return(df)
+  }
+  else {
     getFlowsRecursive(df, resData$meta$nextLink)
   }
-  df
 }
 
 #'
