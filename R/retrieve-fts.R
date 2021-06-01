@@ -2,7 +2,8 @@ pacman::p_load(httr,
                dplyr,
                tidyr)
 
-#' getUrl
+#' (Internal) Returns the FTS API URL for the flows on the specified boundary.
+#' At least one of the boundary parameters is required.
 #' 
 #' @year The year boundary
 #' @planid The plan boundary
@@ -12,16 +13,11 @@ pacman::p_load(httr,
 #' Could be expanded to include more parameters - parameters should be named according
 #' to API spec (default values and null checks would be necessary)
 #'
-getUrl <- function(year, planid) {
-  flowsUrl <- "https://api.hpc.tools/v1/public/fts/flow"
-  arguments <- as.list(environment())[-1] # get function call and remove first item (function name)
-  arguments["format"] = "json"
-  queryParams <- paste(lapply(names(arguments), function(n) { 
-    val <- arguments[n]
-    paste(n, val, sep="=") 
-  } ), collapse="&")
-  url <- paste(flowsUrl, queryParams, sep="?")
-  url
+getUrl <- function(year=NULL, planid=NULL) {
+  arguments <- as.list(environment())
+  arguments[["format"]] = "json"
+  flowsUrl <- httr::modify_url("https://api.hpc.tools/v1/public/fts/flow", query = arguments)
+  return(flowsUrl)
 }
 
 #' getFlowsRecursive
